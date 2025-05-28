@@ -5,7 +5,7 @@ import { cn } from '@/lib/utils';
 import { ThemeProvider } from '@/components/theme-provider';
 import { Toaster } from '@/components/ui/toaster';
 import { SiteHeader } from '@/components/layout/site-header';
-// import { SiteFooter } from '@/components/layout/site-footer';
+import { SiteFooter } from '@/components/layout/site-footer';
 
 const fontSans = FontSans({
   subsets: ['latin'],
@@ -39,7 +39,7 @@ export default function RootLayout({
           <div className="relative flex min-h-screen flex-col">
             <SiteHeader />
             <main className="flex-1">{children}</main>
-            {/* <SiteFooter /> */}
+            <SiteFooter />
           </div>
           <Toaster />
         </ThemeProvider>

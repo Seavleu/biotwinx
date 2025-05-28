@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { ArrowRight, Dna, Mic, PenLine, BarChart, Heart } from "lucide-react";
-// import { GradientBackground } from "@/components/ui/gradient-background";
+import { GradientBackground } from "@/components/ui/gradient-background";
 
 export default function Home() {
   const fadeIn = {
@@ -57,7 +57,7 @@ export default function Home() {
 
   return (
     <div className="relative min-h-screen">
-      {/* <GradientBackground variant="accent" intensity="medium" /> */}
+      <GradientBackground variant="accent" intensity="medium" />
       
       <section className="container pt-16 pb-24 md:pt-24 md:pb-32">
         <div className="flex flex-col items-center text-center max-w-4xl mx-auto space-y-8">
@@ -110,25 +110,122 @@ export default function Home() {
         </div>
       </section>
       
-      {/* TODO: Comprehensive Wellness ToolKit */}
       <section id="features" className="container py-16 md:py-24">
-        <div className="text-center mb-16">
+        <motion.div 
+          className="text-center mb-16"
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          variants={fadeIn}
+        >
           <h2 className="text-3xl md:text-4xl font-bold mb-4">Your Comprehensive Wellness Toolkit</h2>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
             Explore the different ways BioTwinX helps you understand and improve your wellbeing.
           </p>
-        </div>  
+        </motion.div>
+        
+        <motion.div 
+          className="grid grid-cols-1 md:grid-cols-2 gap-8"
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          variants={staggerContainer}
+        >
+          {features.map((feature, index) => (
+            <motion.div 
+              key={index} 
+              className="group relative overflow-hidden rounded-2xl bg-card p-8 shadow-md transition-all hover:shadow-lg border hover:border-accent"
+              whileHover={{ y: -5 }}
+              variants={fadeIn}
+            >
+              <div className="mb-5 flex h-14 w-14 items-center justify-center rounded-full bg-primary/10">
+                {feature.icon}
+              </div>
+              <h3 className="mb-3 text-xl font-bold">{feature.title}</h3>
+              <p className="mb-6 text-muted-foreground">{feature.description}</p>
+              <Button asChild variant="ghost" className="group-hover:text-accent">
+                <Link href={feature.href} className="flex items-center gap-2">
+                  Explore
+                  <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                </Link>
+              </Button>
+            </motion.div>
+          ))}
+        </motion.div>
       </section>
-      {/* TODO: Privacy-First Approach */}
+      
       <section className="container py-16 md:py-24">
-        <div className="rounded-2xl bg-card border p-8 md:p-12 relative overflow-hidden"> 
-        <h2 className="text-3xl md:text-4xl font-bold">Privacy-First Approach</h2>
+        <div className="rounded-2xl bg-card border p-8 md:p-12 relative overflow-hidden">
+          <GradientBackground variant="primary" intensity="light" className="opacity-40" />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center relative z-10">
+            <motion.div 
+              className="space-y-6"
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              variants={fadeIn}
+            >
+              <h2 className="text-3xl md:text-4xl font-bold">Privacy-First Approach</h2>
+              <p className="text-lg text-muted-foreground">
+                Your data never leaves your device. BioTwinX uses local storage and processing to ensure your personal information remains private and secure.
+              </p>
+              <ul className="space-y-2">
+                <li className="flex items-center gap-2">
+                  <span className="h-2 w-2 rounded-full bg-accent"></span>
+                  <span>No accounts or sign-ups required</span>
+                </li>
+                <li className="flex items-center gap-2">
+                  <span className="h-2 w-2 rounded-full bg-accent"></span>
+                  <span>All processing happens locally on your device</span>
+                </li>
+                <li className="flex items-center gap-2">
+                  <span className="h-2 w-2 rounded-full bg-accent"></span>
+                  <span>Optional encrypted data storage</span>
+                </li>
+                <li className="flex items-center gap-2">
+                  <span className="h-2 w-2 rounded-full bg-accent"></span>
+                  <span>Clear data deletion options</span>
+                </li>
+              </ul>
+              <Button asChild>
+                <Link href="/selfie">Try it Now</Link>
+              </Button>
+            </motion.div>
+            <motion.div 
+              className="relative h-[300px] md:h-[400px] rounded-lg bg-muted/50 flex items-center justify-center p-6 border"
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              variants={fadeIn}
+            >
+              <div className="text-center">
+                <p className="text-muted-foreground mb-2">Your data visualization will appear here</p>
+                <p className="text-sm text-muted-foreground">Start using BioTwinX to generate insights</p>
+              </div>
+            </motion.div>
+          </div>
         </div>
       </section>
       
-      {/* TODO: Comprehensive Wellness ToolKit */}
       <section className="container py-16 md:py-24">
-         
+        <motion.div 
+          className="text-center max-w-3xl mx-auto"
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          variants={fadeIn}
+        >
+          <h2 className="text-3xl md:text-4xl font-bold mb-6">Ready to discover your wellness potential?</h2>
+          <p className="text-lg text-muted-foreground mb-8">
+            Start your wellness journey today with BioTwinX and gain valuable insights into your health and emotional wellbeing.
+          </p>
+          <Button asChild size="lg" className="gap-2">
+            <Link href="/selfie">
+              Get Started
+              <ArrowRight className="h-4 w-4" />
+            </Link>
+          </Button>
+        </motion.div>
       </section>
     </div>
   );

@@ -38,7 +38,11 @@ export default function RootLayout({
         >
           <div className="relative flex min-h-screen flex-col">
             <SiteHeader />
-            <main className="flex-1">{children}</main>
+            <main className="flex-1">
+              <div className="container mx-auto px-4 py-8">
+                {children}
+              </div>
+            </main>
             <SiteFooter />
           </div>
           <Toaster />

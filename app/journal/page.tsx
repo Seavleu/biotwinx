@@ -115,7 +115,7 @@ export default function JournalPage() {
 
   return (
     <div className="relative min-h-screen pb-16">
-      <GradientBackground variant="secondary" intensity="light" />
+      <GradientBackground variant="accent" intensity="light" />
       
       <div className="container pt-12 md:pt-16">
         <motion.div 

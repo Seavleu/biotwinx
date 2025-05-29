@@ -9,7 +9,8 @@ import {Button} from '@/components/ui/button'
 import {useBioTwinXStore} from '@/lib/store'
 import {generateWellnessAdvice} from '@/lib/ai-utils'
 import Link from 'next/link' 
-import { Dna } from 'lucide-react'
+import { Activity, Dna, Mic, PenLine } from 'lucide-react'
+import { format, parseISO } from 'date-fns'
 
 export default function InsightsPage() {
     const [activeTab, setActiveTab] =useState("overview")
@@ -42,6 +43,17 @@ export default function InsightsPage() {
         }
         }
     }
+
+    const formatDate = (dateString: string) => {
+        try {
+            return format(parseISO(dateString), 'MMM d, yyyy');
+          } catch (error) {
+            return dateString;
+          }
+    }
+    
+    const hasData = selfieEntries.length > 0 || voiceEntries.length > 0 || journalEntries.length > 0
+    
 
   return (
     <div className="relative min-h-screen pb-16">
@@ -125,6 +137,152 @@ export default function InsightsPage() {
                             </Card>
                         </motion.div>                        
                     </motion.div>
+
+                    {/* Record stress level */}
+                    <motion.div variants={fadeIn}>
+                        <Card>
+                        <CardHeader className="pb-2">
+                            <CardTitle className="text-sm font-medium flex items-center">
+                            <Mic className="h-4 w-4 mr-2" />
+                            Stress Level
+                            </CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            {voiceEntries.length > 0 ? (
+                            <div>
+                                <div className="text-2xl font-bold">{voiceEntries[0].stressLevel}%</div>
+                                <div className="w-full h-2 bg-muted rounded-full mt-2">
+                                <div 
+                                    className={`h-full rounded-full ${
+                                    voiceEntries[0].stressLevel > 75 ? "bg-destructive" : 
+                                    voiceEntries[0].stressLevel > 50 ? "bg-warning" : 
+                                    "bg-success"
+                                    }`}
+                                    style={{ width: `${voiceEntries[0].stressLevel}%` }}
+                                />
+                                </div>
+                                <p className="text-xs text-muted-foreground mt-1">
+                                Last measured {formatDate(voiceEntries[0].createdAt)}
+                                </p>
+                            </div>
+                            ) : (
+                            <div className="text-muted-foreground text-sm flex flex-col items-center justify-center h-12">
+                                <p>No data yet</p>
+                                <Button variant="link" size="sm" asChild className="p-0 h-auto">
+                                <a href="/voice">Record your voice</a>
+                                </Button>
+                            </div>
+                            )}
+                        </CardContent>
+                        </Card>
+                    </motion.div>
+
+                    {/* Mood  */}
+                    <motion.div variants={fadeIn}>
+                        <Card>
+                            <CardHeader className="pb-2">
+                                <CardTitle className="text-sm font-medium flex items-center">
+                                <PenLine className="h-4 w-4 mr-2" />
+                                Mood
+                                </CardTitle>
+                            </CardHeader>
+                            <CardContent>
+                                {journalEntries.length > 0 ? (
+                                <div>
+                                    <div className="flex items-center">
+                                    <div className={`w-3 h-3 rounded-full mr-2 ${getEmotionColor(journalEntries[0].emotionalState)}`} />
+                                    <div className="text-2xl font-bold capitalize">{journalEntries[0].emotionalState}</div>
+                                    </div>
+                                    <p className="text-xs text-muted-foreground mt-1">
+                                    Based on your latest journal entry
+                                    </p>
+                                    <p className="text-xs text-muted-foreground">
+                                    {formatDate(journalEntries[0].createdAt)}
+                                    </p>
+                                </div>
+                                ) : (
+                                <div className="text-muted-foreground text-sm flex flex-col items-center justify-center h-12">
+                                    <p>No data yet</p>
+                                    <Button variant="link" size="sm" asChild className="p-0 h-auto">
+                                    <a href="/journal">Write in journal</a>
+                                    </Button>
+                                </div>
+                                )}
+                            </CardContent>
+                        </Card>
+                    </motion.div>
+
+                    {/* Recent journal entries */}
+                    <motion.div
+                        initial="hidden"
+                        animate="visible"
+                        variants={fadeIn}
+                        >
+                        <Card>
+                            <CardHeader>
+                            <CardTitle>Recent Activity</CardTitle>
+                            <CardDescription>
+                                Your latest wellness check-ins and entries
+                            </CardDescription>
+                            </CardHeader>
+                                <CardContent> 
+                                    {!hasData ? (
+                                    <div className="flex flex-col items-center justify-center h-full text-center">
+                                        <Activity className="h-12 w-12 text-muted-foreground/30 mb-4" />
+                                        <p className="text-muted-foreground">No activity yet</p>
+                                        <p className="text-sm text-muted-foreground">
+                                        Start by taking a selfie, recording your voice, or writing in your journal.
+                                        </p>
+                                    </div>
+                                    ) : (
+                                    <div className="space-y-6">
+                                        {[...selfieEntries, ...voiceEntries, ...journalEntries]
+                                        .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+                                        .slice(0, 10)
+                                        .map((entry, index) => {
+                                            const entryType = 'bioAge' in entry ? 'selfie' : 'transcription' in entry ? 'voice' : 'journal';
+                                            const entryIcon = entryType === 'selfie' ? <Dna className="h-5 w-5" /> : 
+                                                            entryType === 'voice' ? <Mic className="h-5 w-5" /> : 
+                                                            <PenLine className="h-5 w-5" />;
+                                            
+                                            let entryContent = '';
+                                            if (entryType === 'selfie') {
+                                            const typedEntry = entry as (typeof selfieEntries)[0];
+                                            entryContent = `Biological age: ${typedEntry.bioAge} years`;
+                                            } else if (entryType === 'voice') {
+                                            const typedEntry = entry as (typeof voiceEntries)[0];
+                                            entryContent = `Stress: ${typedEntry.stressLevel}%, Fatigue: ${typedEntry.fatigueLevel}%`;
+                                            } else {
+                                            const typedEntry = entry as (typeof journalEntries)[0];
+                                            entryContent = `Mood: ${typedEntry.emotionalState}`;
+                                            }
+                                            
+                                            return (
+                                            <div key={index} className="flex">
+                                                <div className="mr-4 flex h-10 w-10 items-center justify-center rounded-full bg-muted">
+                                                {entryIcon}
+                                                </div>
+                                                <div className="space-y-1">
+                                                <p className="text-sm font-medium leading-none">
+                                                    {entryType === 'selfie' ? 'Biological Age Analysis' : 
+                                                    entryType === 'voice' ? 'Voice Analysis' : 
+                                                    'Journal Entry'}
+                                                </p>
+                                                <p className="text-sm text-muted-foreground">
+                                                    {entryContent}
+                                                </p>
+                                                <p className="text-xs text-muted-foreground">
+                                                    {formatDate(entry.createdAt)}
+                                                </p>
+                                                </div>
+                                            </div>
+                                            );
+                                        })}
+                                    </div>
+                                    )} 
+                            </CardContent>
+                        </Card>
+                        </motion.div>
                 </TabsContent>
 
                 {/* TODO: user history */}

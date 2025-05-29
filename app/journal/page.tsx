@@ -133,7 +133,64 @@ export default function JournalPage() {
           </p>
         </motion.div>
 
-        {/* TODO: Add journal entry form */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
+          {/* TODO: Add journal entry form */}
+          <motion.div 
+            initial="hidden"
+            animate="visible"
+            variants={fadeIn}
+          >
+            <Card className="h-full flex flex-col">
+              <CardHeader>
+                <CardTitle>Write Your Journal</CardTitle>
+                <CardDescription>
+                  Share your thoughts, feelings, or experiences from today.
+                </CardDescription>
+              </CardHeader>
+              
+              <CardContent className="flex-grow flex flex-col">
+                <div className="space-y-6 flex-grow flex flex-col">
+                  <Textarea 
+                    value={journalText}
+                    onChange={(e) => setJournalText(e.target.value)}
+                    placeholder="How are you feeling today? What's on your mind?"
+                    className="flex-grow min-h-[300px] resize-none"
+                    disabled={processingStatus === "processing"}
+                  />
+                  
+                  {error && (
+                    <div className="flex items-center text-destructive text-sm">
+                      <AlertCircle className="h-4 w-4 mr-2" />
+                      <p>{error}</p>
+                    </div>
+                  )}
+                  
+                  {processingStatus === "idle" && (
+                    <Button 
+                      onClick={processJournal}
+                      disabled={!journalText.trim()}
+                    >
+                      Analyze Journal
+                    </Button>
+                  )}
+                  
+                  {processingStatus === "processing" && (
+                    <div className="space-y-4">
+                      <div className="flex items-center space-x-2">
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                        <p className="text-sm text-muted-foreground">Analyzing your journal...</p>
+                      </div>
+                      <Progress value={progress} />
+                    </div>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+          </motion.div>
+          
+          {/* TODO: Add journal results */}
+          
+        </div>
       </div>
     </div>
   );

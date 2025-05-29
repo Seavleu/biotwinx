@@ -7,7 +7,7 @@ export async function analyzeFacialImage(imageData: string): Promise<{
     confidence: number;
     features: { [key: string]: number };
   }> {
-    // In a real implementation, this would call a HuggingFace model API
+    // In a real implementation, this would call a zHuggingFace model API
     // For MVP, we're using a mock response
     await new Promise(resolve => setTimeout(resolve, 2000)); // Simulate API delay
     

@@ -16,12 +16,13 @@ export interface JournalEntry {
 
 // VoiceEntry have id, audioUrl, stressLevel, fatigueLevel, createdAt, notes
 export interface VoiceEntry {
-    id: string;
-    audioUrl?: string;
-    stressLevel?: number;
-    fatigueLevel: number;
-    createdAt: string;
-    notes: string;
+  id: string;
+  audioUrl?: string;
+  transcription?: string;
+  stressLevel: number;
+  fatigueLevel: number;
+  createdAt: string;
+  notes: string;
 }
 
 // SelfieEntry have id, image, bioAge, chronologicalAge, features, createdAt

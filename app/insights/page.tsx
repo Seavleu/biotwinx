@@ -10,7 +10,7 @@ import {Button} from '@/components/ui/button'
 import {useBioTwinXStore} from '@/lib/store'
 import {generateWellnessAdvice} from '@/lib/ai-utils'
 import Link from 'next/link' 
-import { Activity, Calendar, Dna, Heart, Mic, PenLine, ThumbsUp, Timer } from 'lucide-react'
+import { Activity, Calendar, Check, Dna, Heart, Loader2, Mic, PenLine, ThumbsUp, Timer } from 'lucide-react'
 import { format, parseISO } from 'date-fns'
 
 export default function InsightsPage() {
@@ -22,6 +22,7 @@ export default function InsightsPage() {
         voiceEntries,
         selfieEntries,
         wellnessAdvice,
+        addWellnessAdvice,
         toggleWellnessAdviceCompleted
     } = useBioTwinXStore()
 
@@ -45,11 +46,61 @@ export default function InsightsPage() {
         }
     }
 
+    useEffect(() => {
+        // Auto-generate wellness advice if none exists
+        if (wellnessAdvice.length === 0 && 
+            (journalEntries.length > 0 || voiceEntries.length > 0 || selfieEntries.length > 0)) {
+          generateAdvice()
+        }
+      }, [])
+    
+      const generateAdvice = async () => {
+        setIsGeneratingAdvice(true)
+        
+        try {
+          const advice = await generateWellnessAdvice({
+            recentJournals: journalEntries.slice(0, 5),
+            recentVoice: voiceEntries.slice(0, 5),
+            recentSelfies: selfieEntries.slice(0, 5)
+          })
+          
+          // Add each piece of advice to the store
+          addWellnessAdvice({
+            text: advice.nutritionAdvice,
+            category: 'nutrition'
+          })
+          
+          addWellnessAdvice({
+            text: advice.exerciseAdvice,
+            category: 'exercise'
+          })
+          
+          addWellnessAdvice({
+            text: advice.sleepAdvice,
+            category: 'sleep'
+          })
+          
+          addWellnessAdvice({
+            text: advice.mentalAdvice,
+            category: 'mental'
+          })
+          
+          addWellnessAdvice({
+            text: advice.socialAdvice,
+            category: 'social'
+          })
+        } catch (error) {
+          console.error("Error generating wellness advice:", error)
+        } finally {
+          setIsGeneratingAdvice(false)
+        }
+      }
+
     const formatDate = (dateString: string) => {
         try {
-            return format(parseISO(dateString), 'MMM d, yyyy');
+            return format(parseISO(dateString), 'MMM d, yyyy')
           } catch (error) {
-            return dateString;
+            return dateString
           }
     }
 
@@ -64,25 +115,26 @@ export default function InsightsPage() {
           tired: "bg-purple-500",
           neutral: "bg-gray-500"
         }        
-        return emotionColors[emotion] || "bg-gray-500";
+        return emotionColors[emotion] || "bg-gray-500"
     }
 
     const getCategoryIcon = (category: string) => {
         switch (category) {
           case 'nutrition':
-            return <Heart className="h-5 w-5 text-accent" />;
+            return <Heart className="h-5 w-5 text-accent" />
           case 'exercise':
-            return <Activity className="h-5 w-5 text-accent" />;
+            return <Activity className="h-5 w-5 text-accent" />
           case 'sleep':
-            return <Timer className="h-5 w-5 text-accent" />;
+            return <Timer className="h-5 w-5 text-accent" />
           case 'mental':
-            return <ThumbsUp className="h-5 w-5 text-accent" />;
+            return <ThumbsUp className="h-5 w-5 text-accent" />
           case 'social':
-            return <Calendar className="h-5 w-5 text-accent" />;
+            return <Calendar className="h-5 w-5 text-accent" />
           default:
-            return <Heart className="h-5 w-5 text-accent" />;
+            return <Heart className="h-5 w-5 text-accent" />
         }
     }
+ 
 
     const hasData = selfieEntries.length > 0 || voiceEntries.length > 0 || journalEntries.length > 0
     
@@ -273,21 +325,21 @@ export default function InsightsPage() {
                                         .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
                                         .slice(0, 10)
                                         .map((entry, index) => {
-                                            const entryType = 'bioAge' in entry ? 'selfie' : 'transcription' in entry ? 'voice' : 'journal';
+                                            const entryType = 'bioAge' in entry ? 'selfie' : 'transcription' in entry ? 'voice' : 'journal'
                                             const entryIcon = entryType === 'selfie' ? <Dna className="h-5 w-5" /> : 
                                                             entryType === 'voice' ? <Mic className="h-5 w-5" /> : 
-                                                            <PenLine className="h-5 w-5" />;
+                                                            <PenLine className="h-5 w-5" />
                                             
-                                            let entryContent = '';
+                                            let entryContent = ''
                                             if (entryType === 'selfie') {
-                                            const typedEntry = entry as (typeof selfieEntries)[0];
-                                            entryContent = `Biological age: ${typedEntry.bioAge} years`;
+                                            const typedEntry = entry as (typeof selfieEntries)[0]
+                                            entryContent = `Biological age: ${typedEntry.bioAge} years`
                                             } else if (entryType === 'voice') {
-                                            const typedEntry = entry as (typeof voiceEntries)[0];
-                                            entryContent = `Stress: ${typedEntry.stressLevel}%, Fatigue: ${typedEntry.fatigueLevel}%`;
+                                            const typedEntry = entry as (typeof voiceEntries)[0]
+                                            entryContent = `Stress: ${typedEntry.stressLevel}%, Fatigue: ${typedEntry.fatigueLevel}%`
                                             } else {
-                                            const typedEntry = entry as (typeof journalEntries)[0];
-                                            entryContent = `Mood: ${typedEntry.emotionalState}`;
+                                            const typedEntry = entry as (typeof journalEntries)[0]
+                                            entryContent = `Mood: ${typedEntry.emotionalState}`
                                             }
                                             
                                             return (
@@ -309,7 +361,7 @@ export default function InsightsPage() {
                                                 </p>
                                                 </div>
                                             </div>
-                                            );
+                                            )
                                         })}
                                     </div>
                                     )} 
@@ -374,10 +426,87 @@ export default function InsightsPage() {
                     <motion.div
                         initial="hidden"
                         animate="visible"
-                        variants={staggerContainer}
-                        className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'
+                        variants={fadeIn}
                     >
-                        
+                        <Card>
+                            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                            <div className="space-y-1">
+                                <CardTitle>Wellness Recommendations</CardTitle>
+                                <CardDescription>
+                                Personalized suggestions based on your data
+                                </CardDescription>
+                            </div>
+                            <Button 
+                                variant="outline" 
+                                size="sm"
+                                onClick={generateAdvice}
+                                disabled={isGeneratingAdvice}
+                            >
+                                {isGeneratingAdvice ? (
+                                <>
+                                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                    Generating
+                                </>
+                                ) : (
+                                "Refresh Advice"
+                                )}
+                            </Button>
+                            </CardHeader>
+                            <CardContent>
+                            {wellnessAdvice.length === 0 ? (
+                                <div className="flex flex-col items-center justify-center h-[300px] text-center">
+                                <Heart className="h-12 w-12 text-muted-foreground/30 mb-4" />
+                                <p className="text-muted-foreground">No recommendations yet</p>
+                                <p className="text-sm text-muted-foreground mb-4">
+                                    Complete at least one activity to receive personalized wellness advice
+                                </p>
+                                {hasData && (
+                                    <Button onClick={generateAdvice} disabled={isGeneratingAdvice}>
+                                    {isGeneratingAdvice ? (
+                                        <>
+                                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                        Generating Advice
+                                        </>
+                                    ) : (
+                                        "Generate Advice"
+                                    )}
+                                    </Button>
+                                )}
+                                </div>
+                            ) : (
+                                <div className="space-y-6">
+                                {wellnessAdvice.map((advice, index) => (
+                                    <div key={index} className="flex items-start space-x-4">
+                                    <div className="mt-0.5">
+                                        <Button
+                                        variant="outline"
+                                        size="icon"
+                                        className={`h-6 w-6 rounded-full ${advice.completed ? 'bg-accent text-accent-foreground' : ''}`}
+                                        onClick={() => toggleWellnessAdviceCompleted(advice.id)}
+                                        >
+                                        {advice.completed ? (
+                                            <Check className="h-3 w-3" />
+                                        ) : (
+                                            <span className="h-3 w-3" />
+                                        )}
+                                        </Button>
+                                    </div>
+                                    <div className="space-y-1">
+                                        <div className="flex items-center space-x-2">
+                                        {getCategoryIcon(advice.category)}
+                                        <p className="text-sm font-medium capitalize">{advice.category}</p>
+                                        </div>
+                                        <p className="text-sm">{advice.text}</p>
+                                        <p className="text-xs text-muted-foreground">
+                                        Added {formatDate(advice.createdAt)}
+                                        </p>
+                                    </div>
+                                    </div>
+                                ))}
+                                </div>
+                            )}
+                            </CardContent>
+                        </Card>                        
                     </motion.div>
                 </TabsContent>
                 {/* TODO: trends chart*/}

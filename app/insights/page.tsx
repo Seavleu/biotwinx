@@ -61,7 +61,61 @@ export default function InsightsPage() {
                     Track your progress and discover patterns in your physical and emotional health.
                 </p>
             </motion.div>
-            
+
+            <Tabs
+             defaultValue='overview'
+             value={activeTab}
+             onValueChange={setActiveTab}
+             className='mx-w-6xl mx-auto'
+            >
+                <motion.div>
+
+                </motion.div>
+                {/* TODO: Overview Tabs */}
+                <TabsContent value="overview" className='space-y-8'>
+                    <motion.div
+                        initial="hidden"
+                        animate="visible"
+                        variants={staggerContainer}
+                        className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'
+                    >
+                        
+                    </motion.div>
+                </TabsContent>
+                {/* TODO: user history */}
+                <TabsContent value="history" className='space-y-8'>
+                    <motion.div
+                        initial="hidden"
+                        animate="visible"
+                        variants={staggerContainer}
+                        className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'
+                    >
+                        
+                    </motion.div>
+                </TabsContent>
+                {/* TODO: recommendations */}
+                <TabsContent value="recommendations" className='space-y-8'>
+                    <motion.div
+                        initial="hidden"
+                        animate="visible"
+                        variants={staggerContainer}
+                        className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'
+                    >
+                        
+                    </motion.div>
+                </TabsContent>
+                {/* TODO: trends chart*/}
+                <TabsContent value="trends" className='space-y-8'>
+                    <motion.div
+                        initial="hidden"
+                        animate="visible"
+                        variants={staggerContainer}
+                        className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'
+                    >
+                        
+                    </motion.div>
+                </TabsContent>
+            </Tabs>
         </div>
     </div>
   )

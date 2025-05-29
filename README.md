@@ -1,23 +1,42 @@
 # 🧬 BIOTWINX
 
+<div align="center">
+
 **Empower Your Wellness Journey with AI Insights**
 
 [![Last Commit](https://img.shields.io/github/last-commit/seavleu/biotwinx)]()
 ![TypeScript](https://img.shields.io/badge/typescript-97.0%25-blue.svg)
 ![Languages](https://img.shields.io/github/languages/count/seavleu/biotwinx)
 
-Built with the tools and technologies:
+</div>
 
-![Next.js](https://img.shields.io/badge/-Next.js-000?logo=next.js)
-![TypeScript](https://img.shields.io/badge/-TypeScript-3178C6?logo=typescript)
-![TailwindCSS](https://img.shields.io/badge/-TailwindCSS-06B6D4?logo=tailwindcss)
-![shadcn/ui](https://img.shields.io/badge/-shadcn/ui-000000?logo=radix-ui)
-![Zustand](https://img.shields.io/badge/-Zustand-000000?logo=zustand)
-![HuggingFace](https://img.shields.io/badge/-HuggingFace-FCC419?logo=huggingface)
-![Recharts](https://img.shields.io/badge/-Recharts-888?logo=recharts)
+## 🛠️ Tech Stack
+
+<p align="center">
+  <a href="https://nextjs.org/" target="_blank" rel="noreferrer">
+    <img alt="Next.js" src="https://img.shields.io/badge/-Next.js-000?logo=next.js&style=for-the-badge">
+  </a>
+  <a href="https://www.typescriptlang.org/" target="_blank" rel="noreferrer">
+    <img alt="TypeScript" src="https://img.shields.io/badge/-TypeScript-3178C6?logo=typescript&style=for-the-badge">
+  </a>
+  <a href="https://tailwindcss.com/" target="_blank" rel="noreferrer">
+    <img alt="TailwindCSS" src="https://img.shields.io/badge/-TailwindCSS-06B6D4?logo=tailwindcss&style=for-the-badge">
+  </a>
+  <a href="https://ui.shadcn.com/" target="_blank" rel="noreferrer">
+    <img alt="shadcn/ui" src="https://img.shields.io/badge/-shadcn/ui-000000?logo=radix-ui&style=for-the-badge">
+  </a>
+  <a href="https://zustand-demo.pmnd.rs/" target="_blank" rel="noreferrer">
+    <img alt="Zustand" src="https://img.shields.io/badge/-Zustand-000000?logo=zustand&style=for-the-badge">
+  </a>
+  <a href="https://huggingface.co/" target="_blank" rel="noreferrer">
+    <img alt="HuggingFace" src="https://img.shields.io/badge/-HuggingFace-FCC419?logo=huggingface&style=for-the-badge">
+  </a>
+  <a href="https://recharts.org/" target="_blank" rel="noreferrer">
+    <img alt="Recharts" src="https://img.shields.io/badge/-Recharts-888?logo=recharts&style=for-the-badge">
+  </a>
+</p>
 
 
----
 
 ## 📚 Table of Contents
 

@@ -10,7 +10,7 @@ import {Button} from '@/components/ui/button'
 import {useBioTwinXStore} from '@/lib/store'
 import {generateWellnessAdvice} from '@/lib/ai-utils'
 import Link from 'next/link' 
-import { Activity, Dna, Mic, PenLine } from 'lucide-react'
+import { Activity, Calendar, Dna, Heart, Mic, PenLine, ThumbsUp, Timer } from 'lucide-react'
 import { format, parseISO } from 'date-fns'
 
 export default function InsightsPage() {
@@ -66,7 +66,24 @@ export default function InsightsPage() {
         }        
         return emotionColors[emotion] || "bg-gray-500";
     }
-    
+
+    const getCategoryIcon = (category: string) => {
+        switch (category) {
+          case 'nutrition':
+            return <Heart className="h-5 w-5 text-accent" />;
+          case 'exercise':
+            return <Activity className="h-5 w-5 text-accent" />;
+          case 'sleep':
+            return <Timer className="h-5 w-5 text-accent" />;
+          case 'mental':
+            return <ThumbsUp className="h-5 w-5 text-accent" />;
+          case 'social':
+            return <Calendar className="h-5 w-5 text-accent" />;
+          default:
+            return <Heart className="h-5 w-5 text-accent" />;
+        }
+    }
+
     const hasData = selfieEntries.length > 0 || voiceEntries.length > 0 || journalEntries.length > 0
     
 
@@ -307,10 +324,49 @@ export default function InsightsPage() {
                     <motion.div
                         initial="hidden"
                         animate="visible"
-                        variants={staggerContainer}
-                        className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'
+                        variants={fadeIn}
                     >
-                        
+                         <Card>
+                            <CardHeader>
+                            <CardTitle>Journal History</CardTitle>
+                            <CardDescription>
+                                Your emotional journey through journal entries
+                            </CardDescription>
+                            </CardHeader>
+                            <CardContent>
+                            <ScrollArea className="h-[400px] pr-4">
+                                {journalEntries.length === 0 ? (
+                                <div className="flex flex-col items-center justify-center h-full text-center">
+                                    <PenLine className="h-12 w-12 text-muted-foreground/30 mb-4" />
+                                    <p className="text-muted-foreground">No journal entries yet</p>
+                                    <Button variant="link" asChild>
+                                    <a href="/journal">Write your first entry</a>
+                                    </Button>
+                                </div>
+                                ) : (
+                                <div className="space-y-8">
+                                    {journalEntries.map((entry, index) => (
+                                    <div key={index} className="space-y-4">
+                                        <div className="flex items-center justify-between">
+                                        <div className="flex items-center">
+                                            <div className={`w-3 h-3 rounded-full mr-2 ${getEmotionColor(entry.emotionalState)}`} />
+                                            <h3 className="font-medium capitalize">{entry.emotionalState}</h3>
+                                        </div>
+                                        <p className="text-xs text-muted-foreground">{formatDate(entry.createdAt)}</p>
+                                        </div>
+                                        <div className="pl-5 border-l-2 border-muted">
+                                        <p className="text-sm">{entry.text}</p>
+                                        </div>
+                                        <div className="bg-muted/30 p-4 rounded-md">
+                                        <p className="text-sm italic">{entry.reflection}</p>
+                                        </div>
+                                    </div>
+                                    ))}
+                                </div>
+                                )}
+                            </ScrollArea>
+                            </CardContent>
+                        </Card>    
                     </motion.div>
                 </TabsContent>
                 {/* TODO: recommendations */}

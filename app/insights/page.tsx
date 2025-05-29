@@ -13,6 +13,9 @@ import Link from 'next/link'
 import { Activity, Calendar, Check, Dna, Heart, Loader2, Mic, PenLine, ThumbsUp, Timer } from 'lucide-react'
 import { format, parseISO } from 'date-fns'
 
+import { BarChart as RechartsBarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line } from "recharts"
+
+
 export default function InsightsPage() {
     const [activeTab, setActiveTab] =useState("overview")
     const [isGeneratingAdvice, setIsGeneratingAdvice] = useState(false)
@@ -134,7 +137,42 @@ export default function InsightsPage() {
             return <Heart className="h-5 w-5 text-accent" />
         }
     }
- 
+
+    // TODO: prepare mockup daa for charts
+    const prepareStressData = () => {
+        if (voiceEntries.length === 0) return []
+        
+        return voiceEntries.slice(0, 7).reverse().map(entry => ({
+          date: formatDate(entry.createdAt),
+          stress: entry.stressLevel,
+          fatigue: entry.fatigueLevel
+        }))
+      }
+    
+      const prepareBioAgeData = () => {
+        if (selfieEntries.length === 0) return []
+        
+        return selfieEntries.slice(0, 7).reverse().map(entry => ({
+          date: formatDate(entry.createdAt),
+          bioAge: entry.bioAge,
+          chronologicalAge: entry.chronologicalAge,
+          difference: entry.chronologicalAge - entry.bioAge
+        }))
+      }
+    
+      const prepareEmotionData = () => {
+        if (journalEntries.length === 0) return []
+        
+        const emotions = journalEntries.reduce((acc, entry) => {
+          acc[entry.emotionalState] = (acc[entry.emotionalState] || 0) + 1
+          return acc
+        }, {} as Record<string, number>)
+        
+        return Object.entries(emotions).map(([emotion, count]) => ({
+          emotion,
+          count
+        }))
+      }
 
     const hasData = selfieEntries.length > 0 || voiceEntries.length > 0 || journalEntries.length > 0
     
@@ -517,7 +555,38 @@ export default function InsightsPage() {
                         variants={staggerContainer}
                         className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'
                     >
-                        
+                        <motion.div variants={fadeIn}>
+                            <Card>
+                            <CardHeader>
+                                <CardTitle>Stress & Fatigue Trends</CardTitle>
+                                <CardDescription>
+                                Track changes in your stress and fatigue levels over time
+                                </CardDescription>
+                            </CardHeader>
+                            <CardContent>
+                                {voiceEntries.length > 0 ? (
+                                <ResponsiveContainer width="100%\" height={300}>
+                                    <LineChart data={prepareStressData()} margin={{ top: 5, right: 20, left: 0, bottom: 5 }}>
+                                    <CartesianGrid strokeDasharray="3 3" />
+                                    <XAxis dataKey="date" />
+                                    <YAxis />
+                                    <Tooltip />
+                                    <Line type="monotone" dataKey="stress" stroke="hsl(var(--destructive))" name="Stress" />
+                                    <Line type="monotone" dataKey="fatigue" stroke="hsl(var(--warning))" name="Fatigue" />
+                                    </LineChart>
+                                </ResponsiveContainer>
+                                ) : (
+                                <div className="flex flex-col items-center justify-center h-[300px] text-center">
+                                    <Activity className="h-12 w-12 text-muted-foreground/30 mb-4" />
+                                    <p className="text-muted-foreground">No voice data yet</p>
+                                    <Button variant="link" asChild>
+                                    <a href="/voice">Record your voice</a>
+                                    </Button>
+                                </div>
+                                )}
+                            </CardContent>
+                            </Card>
+                        </motion.div>                        
                     </motion.div>
                 </TabsContent>
             </Tabs>

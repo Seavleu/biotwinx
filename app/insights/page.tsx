@@ -9,6 +9,7 @@ import {Button} from '@/components/ui/button'
 import {useBioTwinXStore} from '@/lib/store'
 import {generateWellnessAdvice} from '@/lib/ai-utils'
 import Link from 'next/link' 
+import { Dna } from 'lucide-react'
 
 export default function InsightsPage() {
     const [activeTab, setActiveTab] =useState("overview")
@@ -90,9 +91,42 @@ export default function InsightsPage() {
                         variants={staggerContainer}
                         className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'
                     >
-                        
+                        <motion.div 
+                            variants={fadeIn} 
+                        >
+                            <Card>
+                                <CardHeader className='pb-2'>
+                                    <CardTitle className='flex items-center gap-2 text-sm font-medium'>
+                                        <Dna className="h-4 w-4 text-accent mr-2"/>
+                                        Bio Age
+                                        </CardTitle>
+                                </CardHeader>
+                                <CardContent>
+                                    {selfieEntries.length > 0 ? (
+                                            <div>
+                                                <div className="text-2xl font-bold">{selfieEntries[0].bioAge}</div>
+                                                <p className="text-xs text-muted-foreground">
+                                                vs chronological age {selfieEntries[0].chronologicalAge}
+                                                </p>
+                                                <p className={`text-xs ${selfieEntries[0].chronologicalAge - selfieEntries[0].bioAge > 0 ? 'text-success' : 'text-destructive'}`}>
+                                                    {selfieEntries[0].chronologicalAge - selfieEntries[0].bioAge > 0 ? '+' : ''}
+                                                    {selfieEntries[0].chronologicalAge - selfieEntries[0].bioAge} years
+                                                </p>
+                                            </div>
+                                            ) : (
+                                            <div className="text-muted-foreground text-sm flex flex-col items-center justify-center h-12">
+                                                <p>No data yet</p>
+                                                <Button variant="link" size="sm" asChild className="p-0 h-auto">
+                                                <a href="/selfie">Take a selfie</a>
+                                                </Button>
+                                            </div>
+                                            )}
+                                </CardContent> 
+                            </Card>
+                        </motion.div>                        
                     </motion.div>
                 </TabsContent>
+
                 {/* TODO: user history */}
                 <TabsContent value="history" className='space-y-8'>
                     <motion.div

@@ -1,20 +1,50 @@
-# BioTwinX: AI-Powered Wellness Companion
+# 🧬 BIOTWINX
 
-BioTwinX is a multimodal, AI-powered self-health and emotional wellness companion. It helps you understand your biological age, track stress/fatigue levels, and receive personalized wellness suggestions.
+**Empower Your Wellness Journey with AI Insights**
 
-## 🚀 Features
+[![Last Commit](https://img.shields.io/github/last-commit/seavleu/biotwinx)]()
+![TypeScript](https://img.shields.io/badge/typescript-97.0%25-blue.svg)
+![Languages](https://img.shields.io/github/languages/count/seavleu/biotwinx)
 
-- **Biological Age Estimation**: Upload a selfie to estimate your biological age and track changes over time
-- **Voice Analysis**: Record your voice to analyze stress and fatigue levels based on tone and speech patterns
-- **Emotional Journal**: Express your thoughts and feelings to receive personalized wellness reflections
-- **Wellness Insights**: View trends, patterns, and personalized recommendations
+Built with the tools and technologies:
 
-## 🔧 Tech Stack
+![Next.js](https://img.shields.io/badge/-Next.js-000?logo=next.js)
+![TypeScript](https://img.shields.io/badge/-TypeScript-3178C6?logo=typescript)
+![TailwindCSS](https://img.shields.io/badge/-TailwindCSS-06B6D4?logo=tailwindcss)
+![shadcn/ui](https://img.shields.io/badge/-shadcn/ui-000000?logo=radix-ui)
+![Zustand](https://img.shields.io/badge/-Zustand-000000?logo=zustand)
+![HuggingFace](https://img.shields.io/badge/-HuggingFace-FCC419?logo=huggingface)
+![Recharts](https://img.shields.io/badge/-Recharts-888?logo=recharts)
 
-- **Frontend**: Next.js, TypeScript, TailwindCSS, shadcn/ui
-- **State Management**: Zustand (with persistence for local storage)
-- **AI Processing**: HuggingFace Transformers (via API)
-- **Data Visualization**: Recharts
+
+---
+
+## 📚 Table of Contents
+
+- [Overview](#overview)
+- [Getting Started](#getting-started)
+  - [Prerequisites](#prerequisites)
+  - [Installation](#installation)
+  - [Usage](#usage)
+  - [Testing](#testing)
+
+---
+
+## 🧠 Overview
+
+**BioTwinX** is an innovative AI-powered wellness companion designed to enhance your self-health and emotional well-being.
+
+### Why BioTwinX?
+
+This project empowers users to understand and improve their health through advanced analytics and personalized insights. The core features include:
+
+- 🧠 **AI-Powered Wellness Insights**: Get tailored health recommendations based on your unique data.
+- 🎤 **Voice and Selfie Analysis**: Analyze stress levels and biological age through voice recordings and selfies.
+- 📓 **Emotional Journaling**: Engage in self-reflection with AI-assisted journaling for mental wellness.
+- 🔒 **Privacy-Focused Architecture**: Your data is stored locally, ensuring your privacy is prioritized.
+- 💻 **Responsive UI with Tailwind CSS**: Enjoy a modern, responsive design that enhances user experience across devices.
+- 🌈 **Customizable Theme Support**: Switch between themes for a personalized and accessible interface.
+
 
 ## 📐 Architecture
 

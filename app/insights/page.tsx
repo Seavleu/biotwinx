@@ -6,11 +6,11 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { BarChart, Activity, Heart, Calendar, Dna, Mic, PenLine, Check, Timer, ThumbsUp } from "lucide-react"
+import { BarChart, Activity, Heart, Calendar, Dna, Mic, PenLine, Check, Timer, ThumbsUp, Loader2, LucideBarChart } from "lucide-react"
 import { GradientBackground } from "@/components/ui/gradient-background"
 import { useBioTwinXStore } from "@/lib/store"
 import { generateWellnessAdvice } from "@/lib/ai-utils"
-import { format, parseISO, differenceInDays } from "date-fns"
+import { format as formatDateFns, parseISO } from "date-fns"
 import { BarChart as RechartsBarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line } from "recharts"
 
 export default function InsightsPage() {
@@ -96,11 +96,12 @@ export default function InsightsPage() {
     }
   }
 
-  const formatDate = (dateString: string) => {
+  const formatDate = (dateString: string | Date) => {
     try {
-      return format(parseISO(dateString), 'MMM d, yyyy')
+      const date = typeof dateString === 'string' ? parseISO(dateString) : dateString;
+      return formatDateFns(date, 'MMM d, yyyy');
     } catch (error) {
-      return dateString
+      return typeof dateString === 'string' ? dateString : dateString.toString();
     }
   }
 
@@ -148,14 +149,41 @@ export default function InsightsPage() {
   }
 
   const prepareBioAgeData = () => {
-    if (selfieEntries.length === 0) return []
+    // If we have selfie entries, use them
+    if (selfieEntries.length > 0) {
+      return selfieEntries.slice(0, 7).reverse().map(entry => ({
+        date: formatDate(entry.createdAt),
+        bioAge: entry.bioAge,
+        chronologicalAge: entry.chronologicalAge,
+        difference: entry.chronologicalAge - entry.bioAge
+      }));
+    }
     
-    return selfieEntries.slice(0, 7).reverse().map(entry => ({
-      date: formatDate(entry.createdAt),
-      bioAge: entry.bioAge,
-      chronologicalAge: entry.chronologicalAge,
-      difference: entry.chronologicalAge - entry.bioAge
-    }))
+    // Otherwise, generate mock data for the last 7 days
+    const today = new Date();
+    const mockData = [];
+    
+    // Base chronological age (adjust as needed)
+    const baseChronoAge = 30;
+    
+    // Generate data for the last 7 days
+    for (let i = 6; i >= 0; i--) {
+      const date = new Date(today);
+      date.setDate(today.getDate() - i);
+      
+      // Random biological age within ±5 years of chronological age
+      const chronologicalAge = baseChronoAge + (i * 0.1); // Slight increase over time
+      const bioAge = baseChronoAge + (Math.random() * 10 - 5); // Random variation
+      
+      mockData.push({
+        date: formatDateFns(date, 'MMM d'),
+        bioAge: Math.round(bioAge * 10) / 10, // Round to 1 decimal
+        chronologicalAge: Math.round(chronologicalAge * 10) / 10,
+        difference: Math.round((bioAge - chronologicalAge) * 10) / 10
+      });
+    }
+    
+    return mockData;
   }
 
   const prepareEmotionData = () => {
@@ -186,7 +214,7 @@ export default function InsightsPage() {
           variants={fadeIn}
         >
           <div className="flex items-center justify-center mb-4">
-            <BarChart className="h-8 w-8 text-accent mr-2" />
+            <LucideBarChart className="h-8 w-8 text-accent mr-2" />
             <h1 className="text-3xl font-bold">Wellness Insights</h1>
           </div>
           <p className="text-muted-foreground text-lg">

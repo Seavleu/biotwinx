@@ -54,7 +54,7 @@ export default function InsightsPage() {
                 variants={fadeIn}
             >
                 <div className="flex items-center justify-center mb-4">
-                    <PenLine className="h-8 w-8 text-accent mr-2" />
+                    <div className="h-8 w-8 text-accent mr-2" />
                     <h1 className="text-3xl font-bold">Wellness Insights</h1>
                 </div>
                 <p className="text-muted-foreground text-lg">
@@ -68,9 +68,20 @@ export default function InsightsPage() {
              onValueChange={setActiveTab}
              className='mx-w-6xl mx-auto'
             >
-                <motion.div>
-
+                <motion.div
+                 initial="hidden"
+                 animate="visible"
+                 variants={fadeIn}
+                 className='mb-8 flex justify-center'
+                >
+                    <TabsList>
+                        <TabsTrigger value="overview">Overview</TabsTrigger>
+                        <TabsTrigger value="history">History</TabsTrigger>
+                        <TabsTrigger value="recommendations">Recommendations</TabsTrigger>
+                        <TabsTrigger value="trends">Trends</TabsTrigger>
+                    </TabsList>
                 </motion.div>
+
                 {/* TODO: Overview Tabs */}
                 <TabsContent value="overview" className='space-y-8'>
                     <motion.div

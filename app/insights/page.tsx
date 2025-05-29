@@ -5,6 +5,7 @@ import {motion} from 'framer-motion'
 import {GradientBackground} from '@/components/ui/gradient-background'
 import {Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter} from '@/components/ui/card'
 import {Tabs, TabsList, TabsTrigger, TabsContent} from '@/components/ui/tabs'
+import { ScrollArea } from "@/components/ui/scroll-area"
 import {Button} from '@/components/ui/button'
 import {useBioTwinXStore} from '@/lib/store'
 import {generateWellnessAdvice} from '@/lib/ai-utils'
@@ -50,6 +51,20 @@ export default function InsightsPage() {
           } catch (error) {
             return dateString;
           }
+    }
+
+    const getEmotionColor = (emotion: string) => {
+        const emotionColors: Record<string, string> = {
+          happy: "bg-green-500",
+          sad: "bg-blue-500",
+          anxious: "bg-yellow-500",
+          calm: "bg-teal-500",
+          stressed: "bg-red-500",
+          energetic: "bg-orange-500",
+          tired: "bg-purple-500",
+          neutral: "bg-gray-500"
+        }        
+        return emotionColors[emotion] || "bg-gray-500";
     }
     
     const hasData = selfieEntries.length > 0 || voiceEntries.length > 0 || journalEntries.length > 0
@@ -226,6 +241,7 @@ export default function InsightsPage() {
                             </CardDescription>
                             </CardHeader>
                                 <CardContent> 
+                                <ScrollArea className="h-[300px] pr-4">
                                     {!hasData ? (
                                     <div className="flex flex-col items-center justify-center h-full text-center">
                                         <Activity className="h-12 w-12 text-muted-foreground/30 mb-4" />
@@ -280,6 +296,7 @@ export default function InsightsPage() {
                                         })}
                                     </div>
                                     )} 
+                                </ScrollArea>
                             </CardContent>
                         </Card>
                         </motion.div>

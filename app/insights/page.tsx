@@ -12,6 +12,7 @@ import { useBioTwinXStore } from "@/lib/store"
 import { generateWellnessAdvice } from "@/lib/ai-utils"
 import { format as formatDateFns, parseISO } from "date-fns"
 import { BarChart as RechartsBarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line } from "recharts"
+import { mockBioAgeData, mockStressData, mockEmotionData } from "@/data/mockData"
 
 export default function InsightsPage() {
   const [activeTab, setActiveTab] = useState("overview")
@@ -26,6 +27,8 @@ export default function InsightsPage() {
     toggleWellnessAdviceCompleted
   } = useBioTwinXStore()
 
+  const bioAgeData = prepareBioAgeData();
+  
   // Animation variants
   const fadeIn = {
     hidden: { opacity: 0, y: 20 },
@@ -139,68 +142,42 @@ export default function InsightsPage() {
 
   // Prepare data for charts
   const prepareStressData = () => {
-    if (voiceEntries.length === 0) return []
-    
-    return voiceEntries.slice(0, 7).reverse().map(entry => ({
-      date: formatDate(entry.createdAt),
-      stress: entry.stressLevel,
-      fatigue: entry.fatigueLevel
-    }))
+    return voiceEntries.length > 0
+      ? voiceEntries.slice(0, 7).reverse().map(entry => ({
+          date: formatDate(entry.createdAt),
+          stress: entry.stressLevel,
+          fatigue: entry.fatigueLevel,
+        }))
+      : mockStressData; // fallback
   }
-
+  
   const prepareBioAgeData = () => {
-    // If we have selfie entries, use them
-    if (selfieEntries.length > 0) {
-      return selfieEntries.slice(0, 7).reverse().map(entry => ({
-        date: formatDate(entry.createdAt),
-        bioAge: entry.bioAge,
-        chronologicalAge: entry.chronologicalAge,
-        difference: entry.chronologicalAge - entry.bioAge
-      }));
-    }
-    
-    // Otherwise, generate mock data for the last 7 days
-    const today = new Date();
-    const mockData = [];
-    
-    // Base chronological age (adjust as needed)
-    const baseChronoAge = 30;
-    
-    // Generate data for the last 7 days
-    for (let i = 6; i >= 0; i--) {
-      const date = new Date(today);
-      date.setDate(today.getDate() - i);
-      
-      // Random biological age within ±5 years of chronological age
-      const chronologicalAge = baseChronoAge + (i * 0.1); // Slight increase over time
-      const bioAge = baseChronoAge + (Math.random() * 10 - 5); // Random variation
-      
-      mockData.push({
-        date: formatDateFns(date, 'MMM d'),
-        bioAge: Math.round(bioAge * 10) / 10, // Round to 1 decimal
-        chronologicalAge: Math.round(chronologicalAge * 10) / 10,
-        difference: Math.round((bioAge - chronologicalAge) * 10) / 10
-      });
-    }
-    
-    return mockData;
+    return selfieEntries.length > 0
+      ? selfieEntries.slice(0, 7).reverse().map(entry => ({
+          date: formatDate(entry.createdAt),
+          bioAge: entry.bioAge,
+          chronologicalAge: entry.chronologicalAge,
+          difference: entry.chronologicalAge - entry.bioAge,
+        }))
+      : mockBioAgeData;
   }
-
+  
   const prepareEmotionData = () => {
-    if (journalEntries.length === 0) return []
-    
+    if (journalEntries.length === 0) return mockEmotionData;
+  
     const emotions = journalEntries.reduce((acc, entry) => {
       acc[entry.emotionalState] = (acc[entry.emotionalState] || 0) + 1
       return acc
     }, {} as Record<string, number>)
-    
+  
     return Object.entries(emotions).map(([emotion, count]) => ({
       emotion,
-      count
+      count,
     }))
   }
+  
 
-  const hasData = journalEntries.length > 0 || voiceEntries.length > 0 || selfieEntries.length > 0
+  const hasData = journalEntries.length > 0 || voiceEntries.length > 0 || selfieEntries.length > 0;
 
   return (
     <div className="relative min-h-screen pb-16">
@@ -583,7 +560,7 @@ export default function InsightsPage() {
                   </CardHeader>
                   <CardContent>
                     {voiceEntries.length > 0 ? (
-                      <ResponsiveContainer width="100%\" height={300}>
+                      <ResponsiveContainer width="100%" height={300}>
                         <LineChart data={prepareStressData()} margin={{ top: 5, right: 20, left: 0, bottom: 5 }}>
                           <CartesianGrid strokeDasharray="3 3" />
                           <XAxis dataKey="date" />
@@ -615,26 +592,9 @@ export default function InsightsPage() {
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
-                    {selfieEntries.length > 0 ? (
-                      <ResponsiveContainer width="100%\" height={300}>
-                        <BarChart data={prepareBioAgeData()} margin={{ top: 5, right: 20, left: 0, bottom: 5 }}>
-                          <CartesianGrid strokeDasharray="3 3" />
-                          <XAxis dataKey="date" />
-                          <YAxis />
-                          <Tooltip />
-                          <Bar dataKey="bioAge" fill="hsl(var(--accent))" name="Biological Age" />
-                          <Bar dataKey="chronologicalAge" fill="hsl(var(--primary))" name="Chronological Age" />
-                        </BarChart>
-                      </ResponsiveContainer>
-                    ) : (
-                      <div className="flex flex-col items-center justify-center h-[300px] text-center">
-                        <Dna className="h-12 w-12 text-muted-foreground/30 mb-4" />
-                        <p className="text-muted-foreground">No selfie data yet</p>
-                        <Button variant="link" asChild>
-                          <a href="/selfie">Take a selfie</a>
-                        </Button>
-                      </div>
-                    )}
+                    <div className="h-[200px] flex items-center justify-center">
+                      <p className="text-muted-foreground">Biological age visualization will appear here</p>
+                    </div>
                   </CardContent>
                 </Card>
               </motion.div>
@@ -649,7 +609,7 @@ export default function InsightsPage() {
                   </CardHeader>
                   <CardContent>
                     {journalEntries.length > 0 ? (
-                      <ResponsiveContainer width="100%\" height={300}>
+                      <ResponsiveContainer width="100%" height={300}>
                         <BarChart data={prepareEmotionData()} margin={{ top: 5, right: 20, left: 0, bottom: 5 }}>
                           <CartesianGrid strokeDasharray="3 3" />
                           <XAxis dataKey="emotion" />
